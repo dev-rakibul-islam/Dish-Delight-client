@@ -1,0 +1,523 @@
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import { useSession, signOut } from "next-auth/react";
+import {
+  FiMenu,
+  FiX,
+  FiChevronDown,
+  FiLogOut,
+  FiPlusCircle,
+  FiPackage,
+} from "react-icons/fi";
+import { Container } from "@/components/common/Container";
+import { Button } from "@/components/common/Button";
+import { cn } from "@/utils/cn";
+
+const NAV_LINKS = [
+  { href: "/", label: "Home" },
+  { href: "/about", label: "About" },
+  { href: "/all-items", label: "All Services" },
+  { href: "/contact", label: "Contact" },
+];
+
+const authLinks = [
+  { href: "/login", label: "Login" },
+  { href: "/register", label: "Register" },
+];
+
+const MOBILE_PROTECTED_LINKS = [
+  {
+    href: "/add-product",
+    label: "Add Product",
+    icon: <FiPlusCircle className="text-primary" />,
+  },
+  {
+    href: "/manage-products",
+    label: "Manage Products",
+    icon: <FiPackage className="text-primary" />,
+  },
+];
+
+const Logo = () => (
+  <Link
+    href="/"
+    className="relative inline-flex items-center gap-2 text-lg font-semibold uppercase tracking-[0.3em] text-white"
+  >
+    <span className="text-primary">Dish</span>
+    <span className="text-white/80">Delight</span>
+    <span className="absolute -right-4 top-2 h-2 w-2 rounded-full bg-accent shadow-[0_0_12px_rgba(45,212,191,0.8)]" />
+  </Link>
+);
+
+const NavLink = ({ href, label, isActive, onClick }) => (
+  <Link
+    href={href}
+    onClick={onClick}
+    className={cn(
+      "text-sm font-semibold transition",
+      isActive ? "text-white" : "text-white/60 hover:text-white"
+    )}
+  >
+    {label}
+  </Link>
+);
+
+const MobilePanel = ({ isOpen, onClose, pathname, session }) => (
+  <div
+    className={cn(
+      "md:hidden",
+      isOpen
+        ? "pointer-events-auto opacity-100"
+        : "pointer-events-none opacity-0"
+    )}
+  >
+    <div className="absolute inset-x-4 top-20 z-40 rounded-3xl border border-white/20 bg-background-alt/90 p-5 shadow-[0_40px_80px_rgba(2,6,23,0.65)] backdrop-blur">
+      <div className="flex flex-col gap-4">
+        {NAV_LINKS.map((link) => (
+          <NavLink
+            key={link.href}
+            {...link}
+            isActive={pathname === link.href}
+            onClick={onClose}
+          />
+        ))}
+      </div>
+      <div className="mt-6 space-y-3 border-t border-white/10 pt-4">
+        {session?.user ? (
+          <div className="space-y-3">
+            <p className="text-sm text-white/60">
+              Signed in as {" "}
+              <span className="font-semibold text-white">{session.user.name}</span>
+            </p>
+            {MOBILE_PROTECTED_LINKS.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={onClose}
+                className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold text-white transition hover:border-white/30"
+              >
+                {link.icon}
+                {link.label}
+              </Link>
+            ))}
+            <button
+              type="button"
+              onClick={() => {
+                onClose();
+                signOut({ callbackUrl: "/" });
+              }}
+              className="flex w-full items-center justify-center gap-2 rounded-2xl border border-red-400/40 px-4 py-3 text-sm font-semibold text-red-300"
+            >
+              <FiLogOut />
+              Sign out
+            </button>
+          </div>
+        ) : (
+          <div className="flex flex-col gap-3">
+            {authLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={onClose}
+                className="rounded-2xl border border-white/10 px-4 py-3 text-center text-sm font-semibold text-white/70 hover:border-white/30"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  </div>
+);
+
+const UserDropdown = ({ user }) => {
+  const [open, setOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClick = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
+
+  return (
+    <div className="relative" ref={dropdownRef}>
+      <button
+        type="button"
+        onClick={() => setOpen((prev) => !prev)}
+        className="flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-4 py-2 text-sm font-semibold text-white transition hover:border-white/40"
+      >
+        <div className="h-8 w-8 rounded-full border border-white/20 bg-gradient-to-br from-secondary to-primary" />
+        <FiChevronDown className="text-white/70" />
+      </button>
+      {open && (
+        <div className="absolute right-0 mt-3 w-60 rounded-3xl border border-white/10 bg-background-alt/90 p-4 text-sm text-white shadow-[0_25px_65px_rgba(2,6,23,0.7)] backdrop-blur">
+          <div className="border-b border-white/10 pb-3">
+            <p className="text-sm font-semibold text-white">{user.name}</p>
+            <p className="text-xs text-white/50">{user.email}</p>
+          </div>
+          <div className="mt-3 space-y-2">
+            <Link
+              className="flex items-center gap-2 rounded-2xl px-3 py-2 transition hover:bg-white/5"
+              href="/add-product"
+            >
+              <FiPlusCircle className="text-primary" />
+              Add Product
+            </Link>
+            <Link
+              className="flex items-center gap-2 rounded-2xl px-3 py-2 transition hover:bg-white/5"
+              href="/manage-products"
+            >
+              <FiPackage className="text-primary" />
+              Manage Products
+            </Link>
+            <button
+              type="button"
+              onClick={() => signOut({ callbackUrl: "/" })}
+              className="flex w-full items-center gap-2 rounded-2xl px-3 py-2 text-left font-semibold text-red-300 transition hover:bg-red-500/10"
+            >
+              <FiLogOut className="text-red-400" />
+              Sign out
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export function Header() {
+  const pathname = usePathname();
+  const { data: session } = useSession();
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  return (
+    <header className="sticky top-0 z-40 border-b border-white/40 bg-white/70 backdrop-blur">
+      <div className="relative overflow-hidden border-b border-white/10 bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl">
+        <div className="absolute left-[-20%] top-0 h-64 w-64 rounded-full bg-primary/30 blur-3xl" />
+        <div className="absolute right-[-15%] top-10 h-56 w-56 rounded-full bg-secondary/30 blur-3xl" />
+        <div className="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-b from-transparent to-background" />
+        <Container className="relative flex h-20 items-center justify-between gap-6">
+          <div className="flex items-center gap-8">
+            <Logo />
+            <nav className="hidden items-center gap-6 md:flex">
+              {NAV_LINKS.map((link) => (
+                <NavLink
+                  key={link.href}
+                  {...link}
+                  isActive={pathname === link.href}
+                />
+              ))}
+            </nav>
+          </div>
+          <div className="hidden items-center gap-4 md:flex">
+            {session?.user ? (
+              <>
+                <Button as="link" variant="secondary" href="/add-product">
+                  Add Product
+                </Button>
+                <Button as="link" href="/manage-products">
+                  Manage
+                </Button>
+                <UserDropdown user={session.user} />
+              </>
+            ) : (
+              authLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="text-sm font-semibold text-white/80 transition hover:text-white"
+                >
+                  {link.label}
+                </Link>
+              ))
+            )}
+          </div>
+          <button
+            type="button"
+            className="inline-flex items-center justify-center rounded-2xl border border-white/20 bg-white/10 p-2 text-white/80 shadow-lg shadow-black/30 md:hidden"
+            onClick={() => setMobileOpen((prev) => !prev)}
+            aria-label="Toggle menu"
+          >
+            {mobileOpen ? <FiX size={20} /> : <FiMenu size={20} />}
+          </button>
+        </Container>
+      </div>
+      <MobilePanel
+        isOpen={mobileOpen}
+        onClose={() => setMobileOpen(false)}
+        pathname={pathname}
+        session={session}
+      />
+    </header>
+  );
+}"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import { useSession, signOut } from "next-auth/react";
+import {
+  FiMenu,
+  FiX,
+  FiChevronDown,
+  FiLogOut,
+  FiPlusCircle,
+  FiPackage,
+} from "react-icons/fi";
+import { Container } from "@/components/common/Container";
+import { Button } from "@/components/common/Button";
+import { cn } from "@/utils/cn";
+
+const NAV_LINKS = [
+  { href: "/", label: "Home" },
+  { href: "/about", label: "About" },
+  { href: "/all-items", label: "All Services" },
+  { href: "/contact", label: "Contact" },
+];
+
+const authLinks = [
+  { href: "/login", label: "Login" },
+  { href: "/register", label: "Register" },
+];
+
+const mobileProtectedLinks = [
+  {
+    href: "/add-product",
+    label: "Add Product",
+    icon: <FiPlusCircle className="text-primary" />,
+  },
+  {
+    href: "/manage-products",
+    label: "Manage Products",
+    icon: <FiPackage className="text-primary" />,
+  },
+];
+
+const Logo = () => (
+  <Link
+    href="/"
+    className="text-xl font-semibold tracking-tight text-slate-900"
+  >
+    <span className="text-primary">Dish</span> Delight
+  </Link>
+);
+
+const NavLink = ({ href, label, isActive, onClick }) => (
+  <Link
+    href={href}
+    onClick={onClick}
+    className={cn(
+      "text-sm font-medium transition hover:text-primary",
+      isActive ? "text-primary" : "text-slate-600"
+    )}
+  >
+    {label}
+  </Link>
+);
+
+const MobilePanel = ({ isOpen, onClose, pathname, session }) => (
+  <div
+    className={cn(
+      "md:hidden",
+      isOpen
+        ? "pointer-events-auto opacity-100"
+        : "pointer-events-none opacity-0"
+    )}
+  >
+    <div className="absolute inset-x-4 top-24 z-40 rounded-3xl border border-slate-100 bg-white/95 p-5 shadow-2xl">
+      <div className="flex flex-col gap-4">
+        {NAV_LINKS.map((link) => (
+          <NavLink
+            key={link.href}
+            {...link}
+            isActive={pathname === link.href}
+            onClick={onClose}
+          />
+        ))}
+      </div>
+      <div className="mt-6 border-t border-slate-100 pt-4">
+        {session?.user ? (
+          <div className="flex flex-col gap-3">
+            <p className="text-sm text-slate-500">
+              Signed in as{" "}
+              <span className="font-semibold text-slate-900">
+                {session.user.name}
+              </span>
+            </p>
+            {mobileProtectedLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={onClose}
+                className="flex items-center gap-3 rounded-2xl bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-800"
+              >
+                {link.icon}
+                {link.label}
+              </Link>
+            ))}
+            <button
+              type="button"
+              onClick={() => {
+                onClose();
+                signOut({ callbackUrl: "/" });
+              }}
+              className="flex items-center justify-center gap-2 rounded-2xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-700"
+            >
+              <FiLogOut />
+              Sign out
+            </button>
+          </div>
+        ) : (
+          <div className="flex flex-col gap-3">
+            {authLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={onClose}
+                className="rounded-2xl border border-slate-200 px-4 py-3 text-center text-sm font-semibold text-slate-700"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  </div>
+);
+
+const UserDropdown = ({ user }) => {
+  const [open, setOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClick = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
+
+  return (
+    <div className="relative" ref={dropdownRef}>
+      <button
+        type="button"
+        onClick={() => setOpen((prev) => !prev)}
+        className="flex items-center gap-3 rounded-full border border-slate-200 bg-white/80 px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm"
+      >
+        <span className="hidden text-left md:block">
+          <span className="block text-xs text-slate-400">Welcome</span>
+          {user.name}
+        </span>
+        <FiChevronDown className="text-slate-500" />
+      </button>
+      {open && (
+        <div className="absolute right-0 mt-3 w-64 rounded-3xl border border-slate-100 bg-white p-4 shadow-2xl">
+          <div className="border-b border-slate-100 pb-3">
+            <p className="text-sm font-semibold text-slate-900">{user.name}</p>
+            <p className="text-xs text-slate-500">{user.email}</p>
+          </div>
+          <div className="mt-3 flex flex-col gap-2 text-sm font-semibold text-slate-700">
+            <Link
+              className="flex items-center gap-2 rounded-2xl px-3 py-2 hover:bg-slate-50"
+              href="/add-product"
+            >
+              <FiPlusCircle className="text-primary" />
+              Add Product
+            </Link>
+            <Link
+              className="flex items-center gap-2 rounded-2xl px-3 py-2 hover:bg-slate-50"
+              href="/manage-products"
+            >
+              <FiPackage className="text-primary" />
+              Manage Products
+            </Link>
+            <button
+              type="button"
+              onClick={() => signOut({ callbackUrl: "/" })}
+              className="flex items-center gap-2 rounded-2xl px-3 py-2 text-left text-red-500 hover:bg-red-50"
+            >
+              <FiLogOut />
+              Sign out
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export function Header() {
+  const pathname = usePathname();
+  const { data: session } = useSession();
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  return (
+    <header className="sticky top-0 z-40 border-b border-white/40 bg-white/70 backdrop-blur">
+      <Container className="flex h-20 items-center justify-between gap-6">
+        <div className="flex items-center gap-8">
+          <Logo />
+          <nav className="hidden items-center gap-6 md:flex">
+            {NAV_LINKS.map((link) => (
+              <NavLink
+                key={link.href}
+                {...link}
+                isActive={pathname === link.href}
+              />
+            ))}
+          </nav>
+        </div>
+
+        <div className="hidden items-center gap-4 md:flex">
+          {session?.user ? (
+            <>
+              <Button as="link" variant="secondary" href="/add-product">
+                Add Product
+              </Button>
+              <Button as="link" href="/manage-products">
+                Manage
+              </Button>
+              <UserDropdown user={session.user} />
+            </>
+          ) : (
+            authLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="text-sm font-semibold text-slate-600 hover:text-primary"
+              >
+                {link.label}
+              </Link>
+            ))
+          )}
+        </div>
+
+        <button
+          type="button"
+          className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white/80 p-2 text-slate-700 md:hidden"
+          onClick={() => setMobileOpen((prev) => !prev)}
+          aria-label="Toggle menu"
+        >
+          {mobileOpen ? <FiX size={20} /> : <FiMenu size={20} />}
+        </button>
+      </Container>
+      <MobilePanel
+        isOpen={mobileOpen}
+        onClose={() => setMobileOpen(false)}
+        pathname={pathname}
+        session={session}
+      />
+    </header>
+  );
+}
