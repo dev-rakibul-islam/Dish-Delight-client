@@ -1,27 +1,16 @@
-# Netlify configuration for Next.js
+# Netlify configuration for Next.js Static Export
 # This file fixes common routing and reload issues with Next.js on Netlify
 
 [build]
   command = "npm run build"
-  publish = ".next"
-  functions = "netlify/functions"
+  publish = "out"
 
-# Redirect all non-file requests to _next/static or pages
+# Redirect all non-file requests to index for client-side routing
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
-
-# Handle API routes and static files
-[[redirects]]
-  from = "/_next/static/*"
-  to = "/_next/static/:splat"
-  status = 200
-
-[[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/:splat"
-  status = 200
+  conditions = {Request = [{Header = "Accept", Value = "text/html"}}]}
 
 # Security headers
 [[headers]]
