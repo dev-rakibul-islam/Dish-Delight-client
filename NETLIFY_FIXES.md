@@ -3,6 +3,7 @@
 ## Common Issues & Fixes
 
 ### 1. **404 on Page Reload / URL Direct Access**
+
 **Problem:** Pages work when navigated via links but show 404 when refreshing or accessing directly  
 **Solution:** The `netlify.toml` file in the root is already configured. No additional action needed.
 
@@ -11,9 +12,11 @@
 ---
 
 ### 2. **Build Command Issues**
+
 **Problem:** Deployment fails with build errors
 
 **Fix:** Ensure in Netlify dashboard:
+
 ```
 Base directory: dishdelight-client
 Build command: npm run build
@@ -23,9 +26,11 @@ Publish directory: .next
 ---
 
 ### 3. **Environment Variables Not Working**
+
 **Problem:** `NEXT_PUBLIC_*` variables are undefined
 
-**Solution:** 
+**Solution:**
+
 1. Go to Netlify Dashboard → Settings → Build & deploy → Environment
 2. Add: `NEXT_PUBLIC_API_URL=https://your-server.vercel.app`
 3. Redeploy the site
@@ -35,17 +40,20 @@ Publish directory: .next
 ---
 
 ### 4. **API Routes Not Working**
+
 **Problem:** API calls to server return CORS errors
 
 **Solution:**
+
 1. Update server's `CLIENT_ORIGIN` environment variable on Vercel
 2. Set it to your Netlify domain: `https://your-site.netlify.app`
 3. Restart Vercel deployment
 
 **In your client code:**
+
 ```javascript
 // Use the environment variable
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
 // Make requests
 const response = await fetch(`${API_URL}/api/endpoint`);
@@ -54,9 +62,11 @@ const response = await fetch(`${API_URL}/api/endpoint`);
 ---
 
 ### 5. **Images Not Loading**
+
 **Problem:** Images from `next/image` component fail to load
 
 **Solution:** Ensure `next.config.mjs` has proper image domains:
+
 ```javascript
 images: {
   remotePatterns: [
@@ -75,32 +85,39 @@ images: {
 ---
 
 ### 6. **Cookies/Authentication Issues**
+
 **Problem:** Cookies not persisting between requests
 
 **Solution:** In your API calls, add:
+
 ```javascript
 fetch(`${API_URL}/endpoint`, {
-  credentials: 'include', // Include cookies
+  credentials: "include", // Include cookies
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
-})
+});
 ```
 
 **Also ensure server has proper CORS:**
+
 ```javascript
-app.use(cors({
-  origin: 'https://your-site.netlify.app',
-  credentials: true,
-}));
+app.use(
+  cors({
+    origin: "https://your-site.netlify.app",
+    credentials: true,
+  })
+);
 ```
 
 ---
 
 ### 7. **Styles/CSS Not Loading**
+
 **Problem:** CSS works locally but not on Netlify
 
-**Solution:** 
+**Solution:**
+
 - Ensure Tailwind CSS build process completes
 - Check `globals.css` is imported in `src/app/layout.js`
 - Clear Netlify cache: Dashboard → Deploys → Clear cache and redeploy
@@ -108,9 +125,11 @@ app.use(cors({
 ---
 
 ### 8. **Slow Page Loads / Performance**
+
 **Problem:** Site is slow on Netlify
 
 **Solution:**
+
 - Use `next/image` for image optimization
 - Enable static generation where possible
 - Check build output size
@@ -132,6 +151,7 @@ app.use(cors({
 ## Testing After Deployment
 
 1. **Test direct URL access:**
+
    ```
    https://your-site.netlify.app/
    https://your-site.netlify.app/all-items
@@ -149,15 +169,19 @@ app.use(cors({
 ## Netlify Dashboard Quick Actions
 
 ### View Logs
+
 - Dashboard → Deploys → Click latest → View logs
 
 ### Clear Cache
+
 - Dashboard → Deploys → Trigger deploy → Clear cache and redeploy
 
 ### Check Environment Variables
+
 - Dashboard → Site settings → Build & deploy → Environment
 
 ### Test Build Locally
+
 ```bash
 cd dishdelight-client
 npm run build
