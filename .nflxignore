@@ -1,0 +1,61 @@
+# Netlify ignore file
+# Files and directories to ignore during Netlify builds
+
+# Dependencies
+node_modules
+.yarn
+dist
+build
+.next
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Version control
+.git
+.gitignore
+.github
+
+# IDE and editor files
+.vscode
+.idea
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Documentation
+README.md
+DEPLOYMENT_GUIDE.md
+NETLIFY_FIXES.md
+
+# Testing
+*.test.js
+*.spec.js
+__tests__
+test
+tests
+coverage
+
+# CI/CD
+.circleci
+.travis.yml
+.gitlab-ci.yml
+azure-pipelines.yml
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Temporary files
+tmp
+temp
+*.tmp
