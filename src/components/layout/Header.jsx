@@ -73,67 +73,76 @@ const NavLink = ({ href, label, isActive, onClick }) => (
 );
 
 const MobilePanel = ({ isOpen, onClose, pathname, session }) => (
-  <div
-    className={cn(
-      "pointer-events-none md:hidden",
-      isOpen ? "pointer-events-auto opacity-100" : "opacity-0"
+  <>
+    {/* Backdrop overlay */}
+    {isOpen && (
+      <div className="fixed inset-0 top-24 z-30 md:hidden" onClick={onClose} />
     )}
-  >
-    <div className="fixed inset-x-4 top-24 z-40 rounded-3xl border border-white/30 bg-white/10 p-5 shadow-lg backdrop-blur-xl transition-all duration-200">
-      <div className="flex flex-col gap-4">
-        {NAV_LINKS.map((link) => (
-          <NavLink
-            key={link.href}
-            {...link}
-            isActive={pathname === link.href}
-            onClick={onClose}
-          />
-        ))}
-      </div>
-      <div className="mt-6 space-y-3 border-t border-gray-200 pt-4">
-        {session?.user ? (
-          <>
-            <p className="text-xs uppercase tracking-widest text-gray-600">
-              Quick actions
-            </p>
-            {protectedLinks.map((link) => (
+    {/* Menu panel */}
+    <div
+      className={cn(
+        "md:hidden transition-all duration-200",
+        isOpen
+          ? "pointer-events-auto opacity-100 visible"
+          : "pointer-events-none opacity-0 invisible"
+      )}
+    >
+      <div className="fixed inset-x-4 top-24 z-40 rounded-3xl border border-white/30 bg-white p-5 shadow-lg backdrop-blur-xl">
+        <div className="flex flex-col gap-4">
+          {NAV_LINKS.map((link) => (
+            <NavLink
+              key={link.href}
+              {...link}
+              isActive={pathname === link.href}
+              onClick={onClose}
+            />
+          ))}
+        </div>
+        <div className="mt-6 space-y-3 border-t border-gray-200 pt-4">
+          {session?.user ? (
+            <>
+              <p className="text-xs uppercase tracking-widest text-gray-600">
+                Quick actions
+              </p>
+              {protectedLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={onClose}
+                  className="flex items-center gap-3 rounded-2xl bg-gray-100 px-4 py-3 text-sm font-semibold text-gray-900"
+                >
+                  {link.icon}
+                  {link.label}
+                </Link>
+              ))}
+              <button
+                type="button"
+                onClick={() => {
+                  onClose();
+                  signOut({ callbackUrl: "/" });
+                }}
+                className="w-full rounded-2xl border border-gray-300 px-4 py-3 text-sm font-semibold text-gray-900"
+              >
+                <FiLogOut className="inline" aria-hidden />
+                <span className="ml-2">Sign Out</span>
+              </button>
+            </>
+          ) : (
+            authLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
                 onClick={onClose}
-                className="flex items-center gap-3 rounded-2xl bg-gray-100 px-4 py-3 text-sm font-semibold text-gray-900"
+                className="block rounded-2xl border border-gray-300 px-4 py-3 text-center text-sm font-semibold text-gray-900"
               >
-                {link.icon}
                 {link.label}
               </Link>
-            ))}
-            <button
-              type="button"
-              onClick={() => {
-                onClose();
-                signOut({ callbackUrl: "/" });
-              }}
-              className="w-full rounded-2xl border border-gray-300 px-4 py-3 text-sm font-semibold text-gray-900"
-            >
-              <FiLogOut className="inline" aria-hidden />
-              <span className="ml-2">Sign Out</span>
-            </button>
-          </>
-        ) : (
-          authLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              onClick={onClose}
-              className="block rounded-2xl border border-gray-300 px-4 py-3 text-center text-sm font-semibold text-gray-900"
-            >
-              {link.label}
-            </Link>
-          ))
-        )}
+            ))
+          )}
+        </div>
       </div>
     </div>
-  </div>
+  </>
 );
 
 const UserDropdown = ({ user }) => {

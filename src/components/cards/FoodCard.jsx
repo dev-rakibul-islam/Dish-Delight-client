@@ -32,7 +32,7 @@ export function FoodCard({ item, layout = "vertical" }) {
       whileHover="hover"
       viewport={{ once: true, amount: 0.25 }}
       className={cn(
-        "group relative flex flex-col overflow-hidden rounded-4xl bg-white shadow-xl transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl dark:bg-zinc-900",
+        "group relative flex flex-col overflow-hidden rounded-2xl bg-white shadow-xl transition-all duration-200 hover:-translate-y-1 hover:shadow-xl dark:bg-zinc-900",
         layout === "horizontal" ? "md:flex-row" : "h-full"
       )}
     >

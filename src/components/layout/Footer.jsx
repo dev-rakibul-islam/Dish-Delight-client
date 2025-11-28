@@ -28,7 +28,7 @@ const socials = [
 
 export function Footer() {
   return (
-    <footer className="border-t border-white/40 bg-slate-950 text-white">
+    <footer className=" bg-slate-950 text-white p-10">
       <Container className="flex flex-col gap-8 py-12 lg:flex-row lg:items-start lg:justify-between">
         <div className="max-w-sm space-y-4">
           <p className="text-2xl font-semibold">Dish Delight</p>
@@ -40,7 +40,7 @@ export function Footer() {
             © {new Date().getFullYear()} Dish Delight. All rights reserved.
           </p>
         </div>
-        <div className="grid flex-1 gap-8 sm:grid-cols-2">
+        <div className="grid flex-1 gap-8 sm:grid-cols-3 ">
           {footerLinks.map((section) => (
             <div key={section.title} className="space-y-3">
               <p className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-400">

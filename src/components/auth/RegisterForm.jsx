@@ -129,7 +129,7 @@ export function RegisterForm() {
       </div>
       {showGoogleModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/70 px-4">
-          <div className="w-full max-w-md rounded-3xl bg-white/10 p-6 shadow-2xl backdrop-blur-xl">
+          <div className="w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl backdrop-blur-xl">
             <h3 className="text-lg font-semibold text-slate-900">
               Continue with Google?
             </h3>
@@ -149,7 +149,7 @@ export function RegisterForm() {
               <button
                 type="button"
                 onClick={confirmGoogle}
-                className="rounded-2xl bg-primary px-4 py-2 text-sm font-semibold text-white"
+                className="rounded-2xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600"
               >
                 Continue
               </button>
