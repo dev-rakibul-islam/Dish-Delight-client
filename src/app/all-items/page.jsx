@@ -22,10 +22,18 @@ export default async function AllItemsPage() {
           title="Explore every plated experience"
           description="Search, filter, and deep dive into the dishes powering Dish Delight. Each card keeps descriptions concise with ellipses and CTA-ready layouts."
         />
-        <Suspense fallback={<ItemsLoading />}>
+        <Suspense fallback={<DesktopLoadingOnly />}>
           <ItemsExplorer initialItems={items} categories={categories} />
         </Suspense>
       </Container>
+    </div>
+  );
+}
+
+function DesktopLoadingOnly() {
+  return (
+    <div className="hidden md:block">
+      <ItemsLoading />
     </div>
   );
 }
