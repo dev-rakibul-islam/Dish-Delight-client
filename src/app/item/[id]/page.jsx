@@ -185,7 +185,7 @@ export default async function ItemDetailsPage({ params }) {
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
               <Button
                 as="link"
-                variant="primary"
+                variant="secondary"
                 href="/add-product"
                 className="flex-1 py-4 text-base"
               >

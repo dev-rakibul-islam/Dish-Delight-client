@@ -47,8 +47,8 @@ const Logo = () => (
     href="/"
     className="flex items-center gap-2 text-lg font-semibold tracking-tight text-gray-900"
   >
-    <span className="rounded-full bg-orange-500 px-2 py-1 text-xs font-bold text-white flex items-center justify-center">
-      <FiShoppingCart size={16} />
+    <span className="rounded-full bg-black px-2 py-2 text-xs font-extrabold text-white flex items-center justify-center">
+      🍽️
     </span>
     <div className="flex flex-col leading-tight text-sm">
       <span className="text-gray-900">Dish Delight</span>
