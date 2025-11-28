@@ -3,6 +3,7 @@ import { Container } from "@/components/common/Container";
 import { SectionHeading } from "@/components/common/SectionHeading";
 import { getPublicItems } from "@/lib/api";
 import { ItemsExplorer } from "@/components/catalog/ItemsExplorer";
+import { ItemsLoading } from "@/components/catalog/ItemsLoading";
 
 export const metadata = {
   title: "All Items | Dish Delight",
@@ -21,11 +22,7 @@ export default async function AllItemsPage() {
           title="Explore every plated experience"
           description="Search, filter, and deep dive into the dishes powering Dish Delight. Each card keeps descriptions concise with ellipses and CTA-ready layouts."
         />
-        <Suspense
-          fallback={
-            <div className="text-sm text-slate-500">Loading items...</div>
-          }
-        >
+        <Suspense fallback={<ItemsLoading />}>
           <ItemsExplorer initialItems={items} categories={categories} />
         </Suspense>
       </Container>
