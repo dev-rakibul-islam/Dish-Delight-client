@@ -26,8 +26,8 @@ export function ItemsExplorer({ initialItems, categories }) {
   const showReset = Boolean(query || category);
 
   return (
-    <div className="rounded-3xl border border-white/30 bg-white/10 p-6 shadow-sm backdrop-blur-lg">
-      <div className="grid gap-4 border-b border-slate-100 pb-6 md:grid-cols-3">
+    <div className="rounded-3xl border border-slate-200 bg-white md:bg-white/10 p-6 shadow-sm md:backdrop-blur-lg">
+      <div className="grid gap-4 border-b border-slate-200 pb-6 md:grid-cols-3">
         <div className="md:col-span-2">
           <label className="text-sm font-semibold text-slate-700">
             Search dishes

@@ -30,7 +30,7 @@ export function FoodCard({ item, layout = "vertical" }) {
       initial="hidden"
       whileInView="show"
       whileHover="hover"
-      viewport={{ once: true, amount: 0.25 }}
+      viewport={{ once: true, amount: 0.1 }}
       className={cn(
         "group relative flex flex-col overflow-hidden rounded-2xl bg-white shadow-xl transition-all duration-200 hover:-translate-y-1 hover:shadow-xl dark:bg-zinc-900",
         layout === "horizontal" ? "md:flex-row" : "h-full"
@@ -50,7 +50,7 @@ export function FoodCard({ item, layout = "vertical" }) {
           className="object-cover transition-transform duration-700 group-hover:scale-110 group-hover:rotate-1"
           sizes="(max-width: 768px) 100vw, 33vw"
         />
-        <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent opacity-80 transition-opacity duration-300 group-hover:opacity-60" />
+        <div className="absolute inset-0 bg-linear-to-t from-black/60 via-black/20 to-transparent opacity-70 md:opacity-80 transition-opacity duration-300 group-hover:opacity-60" />
 
         {/* Category Tag */}
         <motion.span
